@@ -2,11 +2,11 @@
 #include <stdio.h>
 
 int main(void){
-  char* str = "Hola palabras";
-  char ** vector = split(str, 'l');
-  for(int i = 0; i < 3; i++ ){
-      free(vector[i]);
-  }
-  free(vector);
+  char* str = "abc,,def";
+  char ** vector = split(str, ',');
+  /*for(int i = 0; vector[i] != NULL ; i++ ){
+    printf("%s\n", vector[i]);
+  }*/
+  free_strv(vector);
   return 0;
 }
