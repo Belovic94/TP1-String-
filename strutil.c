@@ -69,7 +69,6 @@ void free_strv(char* strv[]){
   if(!strv)
     return;
   for(int i = 0; strv[i]; i++){
-    printf("La cadena es %s\n",strv[i] );
     free(strv[i]);
   }
   free(strv);
