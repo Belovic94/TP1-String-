@@ -9,8 +9,8 @@
 #define SALIDA 'q'
 #define TABULACION '\t'
 
-
-FILE *abrir_archivo(char *nom_arch);
-
+typedef enum{SUMA = 43, RESTA = 45, MULTIPLICACION = 42, DIVISION = 47}operador_t;
+FILE *abrir_archivo(char *);
+void modificar_caracter(char**, char, char);
 
 #endif //LIB_H

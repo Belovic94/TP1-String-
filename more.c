@@ -1,6 +1,5 @@
 #include "lib.h"
 
-
 int tecla_presionada(void){
   int tecla = getchar();
   while(tecla != '\n' && tecla != 'q'){

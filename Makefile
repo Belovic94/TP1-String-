@@ -5,7 +5,7 @@ CFLAGS += -Werror
 VALGRIND = valgrind
 V_FLAGS = --leak-check=full --track-origins=yes --show-reachable=yes
 
-all: paste more dc strutil strutil.o
+all: paste more dc 
 include deps.mk
 
 clean_obj:
