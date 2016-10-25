@@ -2,89 +2,122 @@
 #include <stdbool.h>
 #include "pila.h"
 #include "strutil.h"
-#define NUM_PRUEBA_1 1
+#define NUM_PRUEBA_1 1//numeros utilizados en la funcion(es_operador).
 #define NUM_PRUEBA_2 3
 
+/*Recibe una cadena.
+ *Decice si la cadena recibida es un número.
+ */
 bool es_numero(char* letras){
 	char* ptr = NULL;
 	double num = strtod(letras, &ptr);
 	return strcmp(ptr, "") == 0 && num != 0;
 }
-
+/*Recibe dos numeros double y un operador.
+ *Realiza el calculo correspondiente al operador, si este es valido.
+ *Devuelve el resultado entre los dos numeros o cero si lo ingresado no es un operador valido.
+ */
 double operar(int operador, double num1, double num2){
 	double res = 0;
 	switch(operador){
 		case SUMA:
-							res = num2 + num1;
-							break;
+			res = num2 + num1;
+			break;
 		case RESTA:
-								res = num2 - num1;
-								break;
+			res = num2 - num1;
+			break;
 		case MULTIPLICACION:
-												res = num2 * num1;
-												break;
+			res = num2 * num1;
+			break;
 		case DIVISION:
-										res = num2 / num1;
-										break;
+			res = num2 / num1;
+			break;
 
 	}
 	return res;
 }
-
+/*Recibe una cadena.
+ *Decice si la cadena recibida es un operador valido.
+ */
 bool es_operador(char* letras){
 	if(strlen(letras) != 1)
 		return false;
+	//Mando 2 numeros eligidos de tal forma que se que no van a dar cero si la operacion es valida.
 	if(operar((int)*letras, NUM_PRUEBA_1, NUM_PRUEBA_2) == 0)
 		return false;
 	return true;
 }
+/*Recibe una pila, un puntero a double y un operador
+ *PRE: La pila fue creada
+ *POST: devuelve un operador booleano, true si se pudo operar si no false.
+ */
+bool realizar_operacion(pila_t *pila, double *numero, int operador){
+	double *num1 = (double*)pila_desapilar(pila);
+	double *num2 = (double*)pila_desapilar(pila);
+	if(!num1 || !num2){
+		fprintf(stderr, "Faltan numeros para poder operar \n");
+		return false;
+	}
+	*numero = operar(operador, *num1, *num2);
+	pila_apilar(pila, numero);
+	return true;
+}
 
+void destruir_elementos(pila_t *pila, char **vec_palabras, double *vec_num){
+	pila_destruir(pila);
+	free_strv(vec_palabras);
+	free(vec_num);
+}
 
 int main(void){
   size_t capacidad = 0;
-  char *linea;
-  if(getline(&linea, &capacidad, stdin) == FIN)
-		return EXIT_FAILURE;
-  pila_t* pila = pila_crear();
-  if(!pila)
-		return EXIT_FAILURE;
-  modificar_caracter(&linea, '\n', '\0');//quito el '\n' al final.
+  char *linea = NULL;
+	char ** vec_palabras;
+	double *num, *vec_num;
+	pila_t* pila;
+	while(getline(&linea, &capacidad, stdin) != FIN){
+		pila = pila_crear();
+  	if(!pila)
+			return EXIT_FAILURE;
+  	modificar_caracter(&linea, '\n', '\0');//quito el '\n' al final.
 
-	char **vector = split(linea, ' ');
-	double *num1, *num2;
-	double *vec_num = malloc(strlen(linea) * sizeof(double));
+		vec_palabras = split(linea, ' ');
+		vec_num = malloc(strlen(linea) * sizeof(double));
 
-	for(int i = 0; vector[i]; i++){
-		if(es_numero(vector[i])){
-			vec_num[i] = strtod(vector[i], NULL);
-			pila_apilar(pila, &vec_num[i]);
-		}
-		else{
-			if(es_operador(vector[i])){
-				num1 = (double*)pila_desapilar(pila);
-				num2 = (double*)pila_desapilar(pila);
-				if(!num1 || !num2){
-					fprintf(stderr, "Faltan numeros \n" );
-					return EXIT_FAILURE;
-				}
-				vec_num[i] = operar((int)*vector[i], *num1, *num2);
+		for(int i = 0; vec_palabras[i]; i++){//verifico que los datos ingresados sean validos y opero
+			if(es_numero(vec_palabras[i])){
+				vec_num[i] = strtod(vec_palabras[i], NULL);
 				pila_apilar(pila, &vec_num[i]);
 			}
 			else{
-				fprintf(stderr, "Se deben ingresar numeros y operdadores separados por espacio\n");
-				return EXIT_FAILURE;
-			}
+				if(es_operador(vec_palabras[i])){
+					if(!realizar_operacion(pila, &vec_num[i], (int)*vec_palabras[i])){
+						destruir_elementos(pila, vec_palabras ,vec_num);
+						free(linea);
+						return EXIT_FAILURE;
+					}
 
+
+				}
+				else{
+					destruir_elementos(pila, vec_palabras ,vec_num);
+					free(linea);
+					fprintf(stderr, "Se deben ingresar numeros y operadadores separados por un espacio \n");
+					return EXIT_FAILURE;
+				}
+			}
 		}
+
+		num = (double*)pila_desapilar(pila);
+		if(!pila_esta_vacia(pila)){
+			destruir_elementos(pila, vec_palabras ,vec_num);
+			free(linea);
+			fprintf(stderr, "Se ingresaron más numeros que operaciones \n");
+			return EXIT_FAILURE;
+		}
+		printf("%f \n", *num);
+		destruir_elementos(pila, vec_palabras ,vec_num);
 	}
-	num1 = (double*)pila_desapilar(pila);
-	if(!pila_esta_vacia(pila)){
-		fprintf(stderr, "Se ingresaron más numeros que operaciones \n");
-		return EXIT_FAILURE;
-	}
-	printf("%f \n", *num1);
-	pila_destruir(pila);
-	free_strv(vector);
-	free(vec_num);
+	free(linea);
 	return EXIT_SUCCESS;
 }
