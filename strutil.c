@@ -3,6 +3,10 @@
 #include <stdlib.h>
 #include <stdio.h>
 
+/* **************************************************************
+ *                     FUNCIONES AUXILIARES                     *
+ * **************************************************************/
+
 char* agregar_cadena(const char* str, size_t indice){
   char* str_aux = malloc(indice + 1);
   if(!str_aux)
@@ -11,6 +15,20 @@ char* agregar_cadena(const char* str, size_t indice){
   str_aux[indice] = '\0';
   return str_aux;
 }
+
+char *cadena_concatenar(char *str, char* str_cpy, char sep, size_t nueva_capacidad){
+    char *str_aux = realloc(str, nueva_capacidad);
+    if(!str_aux)
+      return NULL;
+    strcat(str_aux, str_cpy);
+    str_aux[nueva_capacidad - 2] = sep;
+    str_aux[nueva_capacidad - 1] = '\0';
+    return str_aux;
+}
+
+/* **************************************************************
+ *             FUNCIONES:  SPLIT JOIN Y FREE_STRV               *
+ * **************************************************************/
 
 char** split(const char* str, char sep){
   char* vector[strlen(str)];
@@ -34,16 +52,6 @@ char** split(const char* str, char sep){
   }
   return strv;
 
-}
-
-char *cadena_concatenar(char *str, char* str_cpy, char sep, size_t nueva_capacidad){
-    char *str_aux = realloc(str, nueva_capacidad);
-    if(!str_aux)
-      return NULL;
-    strcat(str_aux, str_cpy);
-    str_aux[nueva_capacidad - 2] = sep;
-    str_aux[nueva_capacidad - 1] = '\0';
-    return str_aux;
 }
 
 char* join(char** strv, char sep){

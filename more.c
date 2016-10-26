@@ -1,5 +1,13 @@
 #include "lib.h"
 
+
+/* **************************************************************
+ *                     FUNCIONES AUXILIARES                     *
+ * **************************************************************/
+
+/*Lee caracteres hasta que se presiona un 'enter' o una 'q'.
+ *Devuelve la tecla presionada('enter' o 'q').
+ */
 int tecla_presionada(void){
   int tecla = getchar();
   while(tecla != '\n' && tecla != 'q'){
@@ -8,6 +16,10 @@ int tecla_presionada(void){
   }
   return tecla;
 }
+
+/* **************************************************************
+ *                   FUNCION PRINCIPAL: MORE                    *
+ * **************************************************************/
 
 int main(int argc, char *argv[]){
   if(argc != 3){

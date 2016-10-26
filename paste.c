@@ -6,7 +6,7 @@ int main(int argc, char *argv[]){
     return EXIT_FAILURE;
   }
 
-  char *linea1 = NULL, *linea2 = NULL; //*linea_aux;
+  char *linea1 = NULL, *linea2 = NULL;
   size_t capacidad1 = 0, capacidad2 = 0;
 
   FILE *arch_1 = abrir_archivo(argv[1]);
@@ -23,11 +23,9 @@ int main(int argc, char *argv[]){
   ssize_t long2 = getline(&linea2, &capacidad2, arch_2);
   while( long1 != FIN && long2 != FIN){//me fijo que se puede leer en ambos archivos.
     modificar_caracter(&linea1, '\n', TABULACION);//saco el \n de la primera linea y coloco una tabulacion;
-    //linea_aux = strchr(linea1, '\n');
-    //linea1[strlen(linea1) - strlen(linea_aux)] = TABULACION;
     fprintf(stdout, "%s%s", linea1, linea2);
     long1 = getline(&linea1, &capacidad1, arch_1);//leo una linea de ambos archivos.
-	  long2 = getline(&linea2, &capacidad2, arch_2);
+    long2 = getline(&linea2, &capacidad2, arch_2);
   }
 
   free(linea1);

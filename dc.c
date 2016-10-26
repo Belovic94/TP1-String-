@@ -5,6 +5,11 @@
 #define NUM_PRUEBA_1 1//numeros utilizados en la funcion(es_operador).
 #define NUM_PRUEBA_2 3
 
+
+/* **************************************************************
+ *                     FUNCIONES AUXILIARES                     *
+ * **************************************************************/
+
 /*Recibe una cadena.
  *Decice si la cadena recibida es un número.
  */
@@ -62,12 +67,18 @@ bool realizar_operacion(pila_t *pila, double *numero, int operador){
 	pila_apilar(pila, numero);
 	return true;
 }
-
+/*Recibe una pila, un vector de cadenas y un vector de doubles.
+ *Destruye los tres parametros recibidos.
+ */
 void destruir_elementos(pila_t *pila, char **vec_palabras, double *vec_num){
 	pila_destruir(pila);
 	free_strv(vec_palabras);
 	free(vec_num);
 }
+
+/* **************************************************************
+ *                     FUNCION PRINCIPAL: DC                    *
+ * **************************************************************/
 
 int main(void){
   size_t capacidad = 0;
@@ -85,21 +96,19 @@ int main(void){
 		vec_num = malloc(strlen(linea) * sizeof(double));
 
 		for(int i = 0; vec_palabras[i]; i++){//verifico que los datos ingresados sean validos y opero
-			if(es_numero(vec_palabras[i])){
+			if(es_numero(vec_palabras[i])){//verifico que sea un número
 				vec_num[i] = strtod(vec_palabras[i], NULL);
 				pila_apilar(pila, &vec_num[i]);
 			}
 			else{
-				if(es_operador(vec_palabras[i])){
+				if(es_operador(vec_palabras[i])){//verifico que sea un operador.
 					if(!realizar_operacion(pila, &vec_num[i], (int)*vec_palabras[i])){
 						destruir_elementos(pila, vec_palabras ,vec_num);
 						free(linea);
 						return EXIT_FAILURE;
 					}
-
-
 				}
-				else{
+				else{//si no es un numero ni un operador valido, salgo mediante un error.
 					destruir_elementos(pila, vec_palabras ,vec_num);
 					free(linea);
 					fprintf(stderr, "Se deben ingresar numeros y operadadores separados por un espacio \n");
@@ -109,7 +118,7 @@ int main(void){
 		}
 
 		num = (double*)pila_desapilar(pila);
-		if(!pila_esta_vacia(pila)){
+		if(!pila_esta_vacia(pila)){//si quedan numeros en la pila, faltan operadores.
 			destruir_elementos(pila, vec_palabras ,vec_num);
 			free(linea);
 			fprintf(stderr, "Se ingresaron más numeros que operaciones \n");
