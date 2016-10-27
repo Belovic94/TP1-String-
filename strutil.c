@@ -62,13 +62,11 @@ char* join(char** strv, char sep){
   str[i] = '\0';
   for(i = 0; strv[i]; i++){
     str_largo = strlen(strv[i]);
-    if(str_largo == 0)
-      continue;
     str = cadena_concatenar(str, strv[i], sep, strlen(str) + str_largo + 2);
     if(!str)
       return NULL;
   }
-  if(strlen(str) > 0)
+  if(strlen(str) > 0)//saca el separador del final.
     str[strlen(str) - 1] = '\0';
   return str;
 }

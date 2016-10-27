@@ -26,8 +26,10 @@ int main(int argc, char *argv[]){
     fprintf(stderr, "La funcion solo acepta 2 parametros \n");
     return EXIT_FAILURE;
   }
+  char* ptr;
   long cant_inicial = strtol(argv[2], &ptr, 10);//verifico que el segundo parametro sea un numero entero.
-  if(ptr || cant_inicial == 0){
+  printf("ptr es %s\n", ptr);
+  if( strcmp(ptr, "") != 0 || cant_inicial == 0){
     fprintf(stderr, "La cantidad de lineas iniciales a mostrar tiene que ser un numero entero\n");
     return EXIT_FAILURE;
   }
@@ -38,15 +40,16 @@ int main(int argc, char *argv[]){
   size_t capacidad = 0;
   char* linea = NULL;
   for (long i = 0; i < cant_inicial && getline(&linea, &capacidad, archivo) != FIN; i++){
-    printf("%s", linea);
+    modificar_caracter(&linea, '\n', '\0');
+    printf("%s (Ingrese 'q' para salir)\n", linea);
   }
 
   int tecla = 0;
   while(getline(&linea, &capacidad, archivo) != FIN && tecla != SALIDA){
-    printf("Ingrese 'enter' para ver la siguiente linea o 'q' para salir \n");
+  //  printf("Ingrese 'q' para salir \n");
     tecla = tecla_presionada();
     if(tecla == '\n'){
-	  fprintf(stdout, "%s", linea);
+    fprintf(stdout, "%s", linea);
     }
   }
   free(linea);
