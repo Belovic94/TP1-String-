@@ -45,6 +45,7 @@ int main(int argc, char *argv[]){
 
   int tecla = 0;
   while(getline(&linea, &capacidad, archivo) != FIN && tecla != SALIDA){
+  //  printf("Ingrese 'q' para salir \n");
     tecla = tecla_presionada();
     if(tecla == '\n'){
     fprintf(stdout, "%s", linea);
